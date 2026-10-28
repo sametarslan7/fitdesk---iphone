@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <!-- FitDesk onboarding 2: "Vücudunu ihmal etme." -->
+  <defs>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7d6bb"/><stop offset="1" stop-color="#e8b28c"/></linearGradient>
+    <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8a5a36"/><stop offset="1" stop-color="#5e3a22"/></linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbf8f2"/><stop offset="1" stop-color="#e2dacb"/></linearGradient>
+    <linearGradient id="tie" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f9a66"/><stop offset="1" stop-color="#11633f"/></linearGradient>
+    <linearGradient id="chair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5bb487"/><stop offset="1" stop-color="#2a7d55"/></linearGradient>
+    <linearGradient id="desk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6efe2"/><stop offset="1" stop-color="#e6dac5"/></linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8fe0b3"/><stop offset="1" stop-color="#2e9c66"/></linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#9ff0c8" stop-opacity="0.7"/><stop offset="0.6" stop-color="#c7f3dc" stop-opacity="0.35"/><stop offset="1" stop-color="#c7f3dc" stop-opacity="0"/></radialGradient>
+    <radialGradient id="neckGlow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#6cf8bb" stop-opacity="0.55"/><stop offset="1" stop-color="#6cf8bb" stop-opacity="0"/></radialGradient>
+  </defs>
+
+  <!-- arka plan parıltısı -->
+  <circle cx="200" cy="200" r="175" fill="url(#glow)"/>
+  <circle cx="200" cy="175" r="78" fill="none" stroke="#6cf8bb" stroke-width="2" opacity="0.35"/>
+  <circle cx="200" cy="175" r="100" fill="none" stroke="#6cf8bb" stroke-width="1.5" opacity="0.2"/>
+
+  <!-- sandalye -->
+  <rect x="126" y="224" width="148" height="112" rx="36" fill="url(#chair)"/>
+
+  <!-- gövde -->
+  <rect x="187" y="166" width="26" height="44" rx="10" fill="#e6ad88"/>
+  <path d="M138,252 C138,228 164,212 200,212 C236,212 262,228 262,252 L268,306 L132,306 Z" fill="url(#shirt)"/>
+  <path d="M186,206 L201,226 L182,232 Z" fill="#ffffff"/>
+  <path d="M214,206 L199,226 L218,232 Z" fill="#ffffff"/>
+  <path d="M195,222 h10 l-2,10 h-6 z" fill="#1d7a4e"/>
+  <path d="M196,232 h8 l6,58 l-10,12 l-10,-12 z" fill="url(#tie)"/>
+
+  <!-- boyna konan kol -->
+  <path d="M152,240 L108,190" stroke="#efe9dd" stroke-width="34" fill="none" stroke-linecap="round"/>
+  <path d="M108,190 L168,190" stroke="#e7e0d2" stroke-width="28" fill="none" stroke-linecap="round"/>
+  <ellipse cx="178" cy="189" rx="15" ry="12" fill="url(#skin)" transform="rotate(-20 178 189)"/>
+  <path d="M170,184 L184,180 M171,190 L186,186" stroke="#d29c78" stroke-width="1.6" stroke-linecap="round"/>
+
+  <!-- boyun parıltısı -->
+  <circle cx="200" cy="204" r="44" fill="url(#neckGlow)"/>
+  <ellipse cx="200" cy="208" rx="62" ry="16" fill="none" stroke="#8ff0c4" stroke-width="2" opacity="0.7"/>
+  <ellipse cx="200" cy="208" rx="48" ry="12" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.9"/>
+  <ellipse cx="200" cy="208" rx="35" ry="8" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.7"/>
+
+  <!-- baş (eğik) -->
+  <g transform="translate(0,14) rotate(10 200 172)">
+    <ellipse cx="166" cy="138" rx="7" ry="11" fill="#e8b28c"/>
+    <ellipse cx="234" cy="138" rx="7" ry="11" fill="#e8b28c"/>
+    <ellipse cx="200" cy="133" rx="34" ry="39" fill="url(#skin)"/>
+    <path d="M166,130 C160,96 184,84 206,86 C232,87 245,106 236,132 C230,118 222,110 210,110 C194,112 180,113 166,130 Z" fill="url(#hair)"/>
+    <path d="M194,90 C208,74 236,78 242,100 C232,92 214,90 194,90 Z" fill="#7a4e2f"/>
+    <path d="M182,128 Q188,124 194,128" stroke="#5e3a22" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path d="M206,128 Q212,124 218,128" stroke="#5e3a22" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <ellipse cx="188" cy="138" rx="3" ry="4" fill="#3b2a20"/>
+    <ellipse cx="212" cy="138" rx="3" ry="4" fill="#3b2a20"/>
+    <path d="M201,141 Q206,150 199,153" stroke="#cf9470" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <path d="M189,158 Q200,165 211,157" stroke="#9c5a3c" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <circle cx="180" cy="152" r="5" fill="#f29b8b" opacity="0.3"/>
+    <circle cx="220" cy="152" r="5" fill="#f29b8b" opacity="0.3"/>
+  </g>
+
+  <!-- masanın altı -->
+  <path d="M146,322 h108 v16 q-54,10 -108,0 z" fill="#2c3431"/>
+  <rect x="104" y="324" width="22" height="10" rx="4" fill="#5a6360"/>
+  <rect x="274" y="324" width="22" height="10" rx="4" fill="#5a6360"/>
+
+  <!-- masa -->
+  <path d="M50,298 L350,298 L366,314 L34,314 Z" fill="url(#desk)"/>
+  <rect x="34" y="314" width="332" height="9" rx="2" fill="#d8c9b0"/>
+
+  <!-- masaya yaslanan kol -->
+  <path d="M252,240 C270,260 278,282 270,300" stroke="#e7e0d2" stroke-width="32" fill="none" stroke-linecap="round"/>
+  <path d="M270,300 L236,302" stroke="#efe9dd" stroke-width="24" fill="none" stroke-linecap="round"/>
+  <ellipse cx="226" cy="302" rx="15" ry="9" fill="url(#skin)"/>
+
+  <!-- uçuşan yapraklar -->
+  <g transform="translate(104,112) rotate(-35) scale(1.1)"><path d="M0,0 C4,-9 15,-12 24,-6 C17,3 7,5 0,0 Z" fill="url(#leaf)"/><path d="M2,-1 C9,-4 15,-6 21,-6" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1" fill="none"/></g>
+  <g transform="translate(290,104) rotate(25) scale(0.8)"><path d="M0,0 C4,-9 15,-12 24,-6 C17,3 7,5 0,0 Z" fill="url(#leaf)"/></g>
+  <g transform="translate(316,196) rotate(-20) scale(1.2)"><path d="M0,0 C4,-9 15,-12 24,-6 C17,3 7,5 0,0 Z" fill="url(#leaf)"/><path d="M2,-1 C9,-4 15,-6 21,-6" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1" fill="none"/></g>
+  <g transform="translate(70,244) rotate(10) scale(1.4)"><path d="M0,0 C4,-9 15,-12 24,-6 C17,3 7,5 0,0 Z" fill="url(#leaf)"/><path d="M2,-1 C9,-4 15,-6 21,-6" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1" fill="none"/></g>
+  <g transform="translate(320,262) rotate(40) scale(0.7)"><path d="M0,0 C4,-9 15,-12 24,-6 C17,3 7,5 0,0 Z" fill="url(#leaf)"/></g>
+</svg>

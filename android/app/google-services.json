@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "849686049156",
+    "project_id": "deskfit-2f20d",
+    "storage_bucket": "deskfit-2f20d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849686049156:android:7ab6abb349e38cc0b9add1",
+        "android_client_info": {
+          "package_name": "com.example.deskfit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "849686049156-ru1ag9f5rtem65asd0i3l56ade46sop3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfudo9l2q3f5BfDVhCipgUZMfJydXK6Po"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "849686049156-ru1ag9f5rtem65asd0i3l56ade46sop3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "849686049156-ecdn99477o6kglj20godlpmahg6gq0oa.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.deskfit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849686049156:android:cde23104bca1c5beb9add1",
+        "android_client_info": {
+          "package_name": "com.fitdesk.fitdesk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "849686049156-1gg643a85s1pvb9amd11gl1p9u9o9sgh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fitdesk.fitdesk",
+            "certificate_hash": "8a83ae95832ed032ee5b77d7f30741891439db38"
+          }
+        },
+        {
+          "client_id": "849686049156-ru1ag9f5rtem65asd0i3l56ade46sop3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfudo9l2q3f5BfDVhCipgUZMfJydXK6Po"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "849686049156-ru1ag9f5rtem65asd0i3l56ade46sop3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "849686049156-ecdn99477o6kglj20godlpmahg6gq0oa.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.deskfit"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,22 @@
+workflows:
+  ios-unsigned:
+    name: iOS imzasız IPA (Sideloadly için)
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Paketleri indir
+        script: flutter pub get
+      - name: iOS derle (imzasız)
+        script: flutter build ios --release --no-codesign
+      - name: IPA paketle
+        script: |
+          rm -rf Payload fitdesk.ipa
+          mkdir -p Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/
+          zip -qry fitdesk.ipa Payload
+    artifacts:
+      - fitdesk.ipa

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" width="120" height="100">
+  <!-- FitDesk logo işareti: yaprak + masa + yaylar. Logo değişirse yalnızca bu dosyayı değiştirin. -->
+  <defs>
+    <linearGradient id="leafLeft" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6fd3a0"/><stop offset="1" stop-color="#2f9e6a"/></linearGradient>
+  </defs>
+  <path d="M68,25.2 A24,24 0 0 1 104,46" fill="none" stroke="#9fe0bf" stroke-width="5"/>
+  <path d="M73.5,34.7 A13,13 0 0 1 93,46" fill="none" stroke="#9fe0bf" stroke-width="5"/>
+  <path d="M40,6 C22,22 15,40 17,56 C19,70 30,79 40,84 Z" fill="url(#leafLeft)"/>
+  <path d="M40,6 C58,22 63,40 61,56 C59,70 50,79 40,84 Z" fill="#bdf0d6"/>
+  <path d="M40,6 C22,22 15,40 17,56 C19,70 30,79 40,84 C50,79 59,70 61,56 C63,40 58,22 40,6 Z" fill="none" stroke="#0f5a3a" stroke-width="4.5" stroke-linejoin="round"/>
+  <path d="M40,10 L40,96" stroke="#0f5a3a" stroke-width="4.5"/>
+  <path d="M40,40 L25,27 M40,58 L21,45 M40,36 L54,23 M40,52 L57,39" stroke="#0f5a3a" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M46,70 C50,56 58,49 68,49 L103,49" fill="none" stroke="#0f5a3a" stroke-width="6" stroke-linecap="round"/>
+  <path d="M72,52 v4 h6 v-4" fill="#0f5a3a" stroke="#0f5a3a" stroke-width="2"/>
+  <path d="M93,51 L99,90" stroke="#0f5a3a" stroke-width="5" stroke-linecap="round"/>
+</svg>
