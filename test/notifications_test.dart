@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:fitdesk/core/auth/auth_service.dart';
 import 'package:fitdesk/core/config/dev_flags.dart';
 import 'package:fitdesk/core/data/activity.dart';
 import 'package:fitdesk/core/data/exercise_catalog.dart';
@@ -342,6 +343,30 @@ void main() {
 
     expect(notifications.permissionRequests, 1);
     // İzin verilmediği için ayar kapandı, bildirim de kalmadı.
+    expect(notifications.scheduled, isEmpty);
+  });
+
+  testWidgets('Giriş yapılmadan hiçbir bildirim kurulmaz', (tester) async {
+    final auth = useFakeBackend(user: null);
+    await passSplash(tester);
+    await toBackground(tester);
+    expect(notifications.scheduled, isEmpty);
+    await toForeground(tester);
+
+    await auth.signIn(email: 'deniz@example.com', password: 'gizli123');
+    await tester.pumpAndSettle();
+    expect(daily(0, BreakReminders.workEndKind), isNotNull);
+    expect(daily(1, BreakReminders.workStartKind), isNotNull);
+  });
+
+  testWidgets('Çıkış yapılınca kurulu bildirimler kaldırılır', (tester) async {
+    await passSplash(tester);
+    await toBackground(tester);
+    expect(notifications.scheduled, isNotEmpty);
+    await toForeground(tester);
+
+    await AuthService.instance.signOut();
+    await tester.pumpAndSettle();
     expect(notifications.scheduled, isEmpty);
   });
 

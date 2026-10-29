@@ -53,6 +53,7 @@ class _FitDeskAppState extends State<FitDeskApp> {
 
   void _onUser(AppUser? user) {
     _user.value = user;
+    _reminders.signedIn = user != null;
     if (user?.uid == _connectedUid) return;
     _connectedUid = user?.uid;
     if (user == null) {

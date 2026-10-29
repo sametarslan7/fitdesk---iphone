@@ -31,7 +31,8 @@ typedef PlannedNotification = ({
 ///
 /// Bugünkü sayaç bildirimleri (mola zamanı, duraklatılmış sayaç, başlatılmamış
 /// sayaç) sadece uygulama arka plandayken kurulur; açıkken kart zaten
-/// gösterir. Bildirimler kapalıysa ya da odak modu açıksa hiçbiri kurulmaz.
+/// gösterir. Oturum açık değilse, bildirimler kapalıysa ya da odak modu
+/// açıksa hiçbiri kurulmaz; çıkış yapılınca kurulu olanlar da kaldırılır.
 class BreakReminders with WidgetsBindingObserver {
   BreakReminders(this._settings, this._activity) {
     _settings.addListener(_replan);
@@ -80,6 +81,14 @@ class BreakReminders with WidgetsBindingObserver {
   DateTime _idleSince = clock();
   DateTime? _pausedSince;
   bool _inForeground = true;
+  bool _signedIn = false;
+
+  /// Oturum açılınca ya da kapanınca çağrılır.
+  set signedIn(bool value) {
+    if (value == _signedIn) return;
+    _signedIn = value;
+    _replan();
+  }
 
   /// Son kurulan plan; sadece değişen bildirimler yeniden kurulur. Null iken
   /// eski kayıtlar bilinmediği için önce hepsi temizlenir.
@@ -121,7 +130,9 @@ class BreakReminders with WidgetsBindingObserver {
   @visibleForTesting
   Map<int, PlannedNotification> plan() {
     final s = _settings.value;
-    if (!s.notificationsEnabled || s.focusModeEnabled) return const {};
+    if (!_signedIn || !s.notificationsEnabled || s.focusModeEnabled) {
+      return const {};
+    }
 
     final now = clock();
     final today = DateTime(now.year, now.month, now.day);
