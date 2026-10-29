@@ -18,6 +18,7 @@ enum _Availability { available, offDay, beforeHours, afterHours }
 
 /// Sonraki molaya geri sayan merkezi kart. Süre bitince rastgele bir bölgeden
 /// egzersiz önerir; butona basılınca [onBreakDue] ile o egzersiz başlar.
+/// Mola [snoozeMinutes] ertelenebilir ya da atlanıp sayaç başa alınabilir.
 /// Sadece [workDays] içindeki günlerde, [workStart]–[workEnd] arasında çalışır.
 class BreakTimerCard extends StatefulWidget {
   const BreakTimerCard({
@@ -29,6 +30,9 @@ class BreakTimerCard extends StatefulWidget {
     required this.onBreakDue,
     this.onSessionChanged,
   });
+
+  /// Ertele düğmesinin molayı kaç dakika sonraya attığı.
+  static const snoozeMinutes = 10;
 
   /// Şimdiki zaman; testler sabit bir gün/saat verebilsin diye değiştirilebilir.
   @visibleForTesting
@@ -69,7 +73,11 @@ class _BreakTimerCardState extends State<BreakTimerCard>
   /// dönünce kalan süre buradan yeniden hesaplanır.
   DateTime? _endsAt;
 
-  int get _total => _intervalMinutes * DevFlags.secondsPerIntervalUnit;
+  /// Mola ertelendiyse erteleme süresi (sn); halka bu süreye göre dolar.
+  int? _snoozeSeconds;
+
+  int get _total =>
+      _snoozeSeconds ?? _intervalMinutes * DevFlags.secondsPerIntervalUnit;
 
   _Availability get _availability {
     final now = BreakTimerCard.clock();
@@ -130,6 +138,7 @@ class _BreakTimerCardState extends State<BreakTimerCard>
       }
       setState(() {
         _intervalMinutes = json['interval'] as int;
+        _snoozeSeconds = json['snooze'] as int?;
         if (status == BreakTimerStatus.paused) {
           _remaining = json['remaining'] as int;
           _setStatus(BreakTimerStatus.paused);
@@ -209,6 +218,7 @@ class _BreakTimerCardState extends State<BreakTimerCard>
         'status': _state.name,
         'interval': _intervalMinutes,
         'remaining': _remaining,
+        'snooze': _snoozeSeconds,
         'endsAt': _endsAt?.millisecondsSinceEpoch,
         'savedAt': BreakTimerCard.clock().millisecondsSinceEpoch,
       }),
@@ -219,6 +229,7 @@ class _BreakTimerCardState extends State<BreakTimerCard>
     _ticker?.cancel();
     setState(() {
       _intervalMinutes = minutes;
+      _snoozeSeconds = null;
       _remaining = _total;
       _setStatus(BreakTimerStatus.idle);
       _suggestion = null;
@@ -243,6 +254,24 @@ class _BreakTimerCardState extends State<BreakTimerCard>
     }
   }
 
+  /// Molayı [BreakTimerCard.snoozeMinutes] sonraya atar; öneri aynı kalır.
+  void _snooze() {
+    final seconds =
+        BreakTimerCard.snoozeMinutes * DevFlags.secondsPerIntervalUnit;
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+    setState(() {
+      _snoozeSeconds = seconds;
+      _remaining = seconds;
+      _setStatus(
+        BreakTimerStatus.running,
+        endsAt: BreakTimerCard.clock().add(Duration(seconds: seconds)),
+      );
+    });
+  }
+
+  /// Molayı atlar; sayaç başa döner, kullanıcı kendisi yeniden başlatır.
+  void _skip() => _reset(widget.intervalMinutes);
+
   void _tick() {
     if (_availability != _Availability.available) {
       _reset(widget.intervalMinutes);
@@ -254,7 +283,7 @@ class _BreakTimerCardState extends State<BreakTimerCard>
         _remaining = 0;
         _ticker?.cancel();
         _setStatus(BreakTimerStatus.finished, endsAt: _endsAt);
-        _suggestion = ExerciseCatalog.suggestForBreak();
+        _suggestion ??= ExerciseCatalog.suggestForBreak();
       }
     });
   }
@@ -363,9 +392,12 @@ class _BreakTimerCardState extends State<BreakTimerCard>
               const SizedBox(height: 8),
               Text(
                 unavailable?.title ??
-                    (_state == BreakTimerStatus.finished
-                        ? 'MOLA ZAMANI'
-                        : 'SONRAKİ MOLAYA KALAN SÜRE'),
+                    switch (_state) {
+                      BreakTimerStatus.finished => 'MOLA ZAMANI',
+                      _ when _snoozeSeconds != null =>
+                        'ERTELENEN MOLAYA KALAN SÜRE',
+                      _ => 'SONRAKİ MOLAYA KALAN SÜRE',
+                    },
                 textAlign: TextAlign.center,
                 style: textTheme.labelSmall?.copyWith(
                   fontSize: 11 * textScale,
@@ -443,6 +475,27 @@ class _BreakTimerCardState extends State<BreakTimerCard>
                   ),
                 ),
               ),
+              if (unavailable == null && _state == BreakTimerStatus.finished)
+                Padding(
+                  padding: EdgeInsets.only(top: 4 * scale),
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    children: [
+                      _SecondaryAction(
+                        icon: Icons.snooze_rounded,
+                        label: '${BreakTimerCard.snoozeMinutes} dk Ertele',
+                        textScale: textScale,
+                        onPressed: _snooze,
+                      ),
+                      _SecondaryAction(
+                        icon: Icons.skip_next_rounded,
+                        label: 'Bu Molayı Atla',
+                        textScale: textScale,
+                        onPressed: _skip,
+                      ),
+                    ],
+                  ),
+                ),
               SizedBox(height: 12 * scale),
               if (unavailable != null)
                 Text(
@@ -480,6 +533,37 @@ class _BreakTimerCardState extends State<BreakTimerCard>
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Mola zamanı ana düğmenin altındaki sade, ikincil düğme.
+class _SecondaryAction extends StatelessWidget {
+  const _SecondaryAction({
+    required this.icon,
+    required this.label,
+    required this.textScale,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final String label;
+  final double textScale;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        foregroundColor: AppColors.outline,
+        textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
+          fontSize: 13 * textScale,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      icon: Icon(icon, size: 18 * textScale),
+      label: Text(label),
     );
   }
 }

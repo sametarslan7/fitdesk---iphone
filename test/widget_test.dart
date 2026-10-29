@@ -211,6 +211,62 @@ void main() {
     },
   );
 
+  testWidgets(
+    'Mola ertelenir, aynı öneriyle döner; atlanınca sayaç başa döner',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 2000);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      var now = wednesdayMorning;
+      BreakTimerCard.clock = () => now;
+
+      Future<void> elapse(int seconds) async {
+        for (var i = 0; i < seconds; i++) {
+          now = now.add(const Duration(seconds: 1));
+          await tester.pump(const Duration(seconds: 1));
+        }
+      }
+
+      String suggestionText() =>
+          tester.widget<Text>(find.textContaining('Önerilen:')).data!;
+
+      SharedPreferences.setMockInitialValues(onboardedPrefs);
+      await passSplash(tester);
+      expect(find.text('10 dk Ertele'), findsNothing);
+
+      await tester.tap(find.text('Çalışmaya Başla'));
+      await elapse(30 * DevFlags.secondsPerIntervalUnit);
+      expect(find.text('MOLA ZAMANI'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      final suggestion = suggestionText();
+
+      await tester.tap(find.text('10 dk Ertele'));
+      await tester.pump();
+      expect(find.text('ERTELENEN MOLAYA KALAN SÜRE'), findsOneWidget);
+      expect(
+        find.text(timerText(BreakTimerCard.snoozeMinutes)),
+        findsOneWidget,
+      );
+      expect(find.text('Duraklat'), findsOneWidget);
+
+      await elapse(
+        BreakTimerCard.snoozeMinutes * DevFlags.secondsPerIntervalUnit,
+      );
+      expect(find.text('Egzersize Başla!'), findsOneWidget);
+      expect(suggestionText(), suggestion);
+
+      await tester.tap(find.text('Bu Molayı Atla'));
+      await tester.pump();
+      expect(find.text('Çalışmaya Başla'), findsOneWidget);
+      expect(find.text(timerText(30)), findsOneWidget);
+      expect(find.textContaining('Önerilen:'), findsNothing);
+
+      // Sayaç kendiliğinden başlamaz.
+      await elapse(3);
+      expect(find.text(timerText(30)), findsOneWidget);
+    },
+  );
+
   testWidgets('Uygulama kapatılıp açılınca sayaç kaldığı yerden sürer', (
     tester,
   ) async {
