@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import '../../../core/config/dev_flags.dart';
 import '../../../core/data/activity.dart';
 import '../../../core/data/exercise_catalog.dart';
 import '../../../core/notifications/break_reminders.dart';
+import '../../../core/storage/app_prefs.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/text_utils.dart';
 import '../../../core/widgets/app_card.dart';
@@ -102,6 +104,50 @@ class _BreakTimerCardState extends State<BreakTimerCard>
     _clockTicker = Timer.periodic(const Duration(seconds: 30), (_) {
       if (_state == BreakTimerStatus.idle) setState(() {});
     });
+    _restore();
+  }
+
+  /// Uygulama kapatılıp açılınca süren seansı kayıttan geri yükler. Kayıt
+  /// başka bir güne aitse ya da şu an mesai dışındaysa silinir.
+  Future<void> _restore() async {
+    final raw = await AppPrefs.breakSessionJson();
+    if (raw == null || !mounted || _state != BreakTimerStatus.idle) return;
+    try {
+      final json = jsonDecode(raw) as Map<String, dynamic>;
+      final status = BreakTimerStatus.values.byName(json['status'] as String);
+      final savedAt = DateTime.fromMillisecondsSinceEpoch(
+        json['savedAt'] as int,
+      );
+      final endsAtMs = json['endsAt'] as int?;
+      final endsAt = endsAtMs == null
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(endsAtMs);
+      final now = BreakTimerCard.clock();
+      if (!DateUtils.isSameDay(savedAt, now) ||
+          _availability != _Availability.available) {
+        await AppPrefs.clearBreakSession();
+        return;
+      }
+      setState(() {
+        _intervalMinutes = json['interval'] as int;
+        if (status == BreakTimerStatus.paused) {
+          _remaining = json['remaining'] as int;
+          _setStatus(BreakTimerStatus.paused);
+        } else if (endsAt != null && endsAt.isAfter(now)) {
+          _remaining = math.max(endsAt.difference(now).inSeconds, 1);
+          _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+          _setStatus(BreakTimerStatus.running, endsAt: endsAt);
+        } else if (endsAt != null) {
+          // Uygulama kapalıyken süre doldu.
+          _remaining = 0;
+          _suggestion = ExerciseCatalog.suggestForBreak();
+          _setStatus(BreakTimerStatus.finished, endsAt: endsAt);
+        }
+      });
+    } catch (_) {
+      // Bozuk kayıt: sayaç boşta başlar.
+      await AppPrefs.clearBreakSession();
+    }
   }
 
   @override
@@ -149,6 +195,24 @@ class _BreakTimerCardState extends State<BreakTimerCard>
     _state = status;
     _endsAt = endsAt;
     widget.onSessionChanged?.call(status, endsAt);
+    _save();
+  }
+
+  /// Seansı cihaza yazar; uygulama kapatılsa da açılınca kaldığı yerden sürer.
+  void _save() {
+    if (_state == BreakTimerStatus.idle) {
+      AppPrefs.clearBreakSession();
+      return;
+    }
+    AppPrefs.setBreakSessionJson(
+      jsonEncode({
+        'status': _state.name,
+        'interval': _intervalMinutes,
+        'remaining': _remaining,
+        'endsAt': _endsAt?.millisecondsSinceEpoch,
+        'savedAt': BreakTimerCard.clock().millisecondsSinceEpoch,
+      }),
+    );
   }
 
   void _reset(int minutes) {

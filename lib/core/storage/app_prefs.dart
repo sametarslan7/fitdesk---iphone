@@ -6,6 +6,7 @@ abstract final class AppPrefs {
   static const _favoriteExercisesKey = 'favorite_exercises';
   static const _settingsKey = 'settings';
   static const _activityKey = 'activity_log';
+  static const _breakSessionKey = 'break_session';
 
   static Future<bool> isOnboardingCompleted() async {
     final prefs = await SharedPreferences.getInstance();
@@ -50,5 +51,20 @@ abstract final class AppPrefs {
   static Future<void> clearActivity() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_activityKey);
+  }
+
+  static Future<String?> breakSessionJson() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_breakSessionKey);
+  }
+
+  static Future<void> setBreakSessionJson(String json) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_breakSessionKey, json);
+  }
+
+  static Future<void> clearBreakSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_breakSessionKey);
   }
 }

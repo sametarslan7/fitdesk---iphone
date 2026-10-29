@@ -11,6 +11,7 @@ import 'core/data/favorites.dart';
 import 'core/data/settings.dart';
 import 'core/notifications/break_reminders.dart';
 import 'core/notifications/notification_service.dart';
+import 'core/storage/app_prefs.dart';
 import 'core/theme/app_theme.dart';
 import 'features/splash/splash_screen.dart';
 import 'firebase_options.dart';
@@ -58,6 +59,8 @@ class _FitDeskAppState extends State<FitDeskApp> {
     _connectedUid = user?.uid;
     if (user == null) {
       _activity.disconnect();
+      // Sonra giren hesap eski hesabın sayacıyla başlamasın.
+      AppPrefs.clearBreakSession();
     } else {
       _activity.connect(ActivityCloud.forUser(user.uid));
     }

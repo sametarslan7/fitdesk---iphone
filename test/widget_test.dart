@@ -211,6 +211,53 @@ void main() {
     },
   );
 
+  testWidgets('Uygulama kapatılıp açılınca sayaç kaldığı yerden sürer', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(412, 2000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    var now = wednesdayMorning;
+    BreakTimerCard.clock = () => now;
+
+    Future<void> restart() async {
+      await tester.pumpWidget(const SizedBox());
+      await passSplash(tester);
+    }
+
+    SharedPreferences.setMockInitialValues(onboardedPrefs);
+    await passSplash(tester);
+    await tester.tap(find.text('Çalışmaya Başla'));
+    await tester.pump();
+
+    // Kapalıyken geçen süre sayaçtan düşer.
+    now = now.add(const Duration(seconds: 10));
+    await restart();
+    expect(find.text(timerText(30, elapsed: 10)), findsOneWidget);
+    expect(find.text('Duraklat'), findsOneWidget);
+
+    // Duraklatılmış sayaç aynı kalır.
+    await tester.tap(find.text('Duraklat'));
+    await tester.pump();
+    now = now.add(const Duration(minutes: 5));
+    await restart();
+    expect(find.text(timerText(30, elapsed: 10)), findsOneWidget);
+    expect(find.text('Devam Et'), findsOneWidget);
+
+    // Kapalıyken süre dolduysa mola egzersizi önerilir.
+    await tester.tap(find.text('Devam Et'));
+    await tester.pump();
+    now = now.add(const Duration(hours: 1));
+    await restart();
+    expect(find.text('Egzersize Başla!'), findsOneWidget);
+
+    // Ertesi gün eski seans silinir.
+    now = DateTime(2026, 10, 22, 10);
+    await restart();
+    expect(find.text('Çalışmaya Başla'), findsOneWidget);
+    expect(find.text(timerText(30)), findsOneWidget);
+  });
+
   Future<void> openExercisesTab(WidgetTester tester) async {
     SharedPreferences.setMockInitialValues(onboardedPrefs);
     await passSplash(tester);
